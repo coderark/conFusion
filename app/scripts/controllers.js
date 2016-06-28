@@ -40,7 +40,7 @@ angular.module('confusionApp').controller('MenuController', ['$scope', 'menuFact
 .controller('FeedbackController', ['$scope', function($scope) {
     $scope.sendFeedback = function() {
                         console.log($scope.feedback);
-                        if ($scope.feedback.agree && ($scope.feedback.mychannel == "")&& !$scope.feedback.mychannel) {
+                        if ($scope.feedback.agree && ($scope.feedback.mychannel === "")&& !$scope.feedback.mychannel) {
                             $scope.invalidChannelSelection = true;
                             console.log('incorrect');
                         }
@@ -55,9 +55,9 @@ angular.module('confusionApp').controller('MenuController', ['$scope', 'menuFact
                         }
                     };
         }])
-        .controller('DishDetailController',  ['$scope', 'menuFactory', function($scope, menuFactory) {
+        .controller('DishDetailController',  ['$scope', 'menuFactory', '$stateParams', function($scope, menuFactory, $stateParams) {
 
-            $scope.dish = menuFactory.getDish(3);
+            $scope.dish = menuFactory.getDish(parseInt($stateParams.id, 10));
 
         }])
         .controller('DishCommentController', ['$scope', function($scope) {
@@ -84,5 +84,15 @@ angular.module('confusionApp').controller('MenuController', ['$scope', 'menuFact
                 $scope.commentForm.$setPristine();
                 //Step 5: reset your JavaScript object that holds your comment
                 $scope.comment={rating:5, comment:"", author:""};
-            }
-        }]);
+            };
+        }])
+        .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', function($scope, menuFactory, corporateFactory){
+            $scope.featDish=menuFactory.getDish(Math.floor(Math.random() *4));
+            $scope.promotion=menuFactory.getPromotion(0);
+            $scope.chef=corporateFactory.getLeader(3);
+        }])
+
+        .controller('AboutController', ['$scope', 'corporateFactory', function ($scope, corporateFactory) {
+            $scope.leaders=corporateFactory.getLeaders();
+        }])
+        ;

@@ -1,6 +1,10 @@
     <div class="container">
-        <div class="row row-content" ng-controller="MenuController">
+        <div class="row row" ng-controller="MenuController">
             <div class="col-xs-12">
+                <ul class="breadcrumb">
+                    <li><a href="#">Home</a></li>
+                    <li class="active">Menu</li>
+                </ul>
                 <button ng-click="toggleDetails()" class="btn btn-xs btn-primary pull-right" type="button">
                   {{showDetails ? 'Hide Details':'Show Details'}}
                 </button>
@@ -26,7 +30,7 @@
                     <ul class="media-list tab-pane fade in active">
                         <li class="media" ng-repeat="dish in dishes | filter:filtText">
                             <div class="media-left media-middle">
-                                <a href="#"><img ng-src={{dish.image}} alt="Uthapizza" class="media-object img-thumbnail"/></a>
+                                <a ui-sref="app.dishdetails({id: dish._id})"><img ng-src={{dish.image}} alt="Uthapizza" class="media-object img-thumbnail"/></a>
                             </div>
                             <div class="media-body">
                                 <h2 class="media-heading">{{dish.name}}
@@ -39,4 +43,5 @@
                 </div>
             </div>
         </div>
+        <p style="padding:10px;"></p>
     </div>
