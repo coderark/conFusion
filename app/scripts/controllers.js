@@ -45,7 +45,7 @@ angular.module('confusionApp').controller('MenuController', ['$scope', 'menuFact
             $scope.channels = channels;
             $scope.invalidChannelSelection = false;
         }])
-.controller('FeedbackController', ['$scope', function($scope) {
+.controller('FeedbackController', ['$scope', 'feedbackFactory', function($scope, feedbackFactory) {
     $scope.sendFeedback = function() {
                         console.log($scope.feedback);
                         if ($scope.feedback.agree && ($scope.feedback.mychannel === "")&& !$scope.feedback.mychannel) {
@@ -53,9 +53,17 @@ angular.module('confusionApp').controller('MenuController', ['$scope', 'menuFact
                             console.log('incorrect');
                         }
                         else {
+                            feedbackFactory.getFeedbacks().save($scope.feedback).$promise.then(
+            					function (response) {
+            						console.log('saveOK response');
+            					},
+            					function (response) {
+            						console.log("Error: " + response.status + " " + response.statusText);
+            					}
+            				);
                             $scope.invalidChannelSelection = false;
-                            $scope.feedback = {mychannel:"", firstName:"", lastName:"",
-                                               agree:false, email:"" };
+                            $scope.feedback = {firstName:"", lastName:"",
+                                               agree:false, email:"", mychannel:"", comments:""};
                             $scope.feedback.mychannel="";
 
                             $scope.feedbackForm.$setPristine();
@@ -106,7 +114,10 @@ angular.module('confusionApp').controller('MenuController', ['$scope', 'menuFact
         }])
         .controller('IndexController', ['$scope', 'menuFactory', 'corporateFactory', function($scope, menuFactory, corporateFactory){
 
-            $scope.showDish = true;
+            $scope.showDish = false;
+            $scope.showPromotion=false;
+            $scope.showChef=false;
+            $scope.showLeaders=false;
             $scope.message="Loading ...";
             $scope.featDish=menuFactory.getDishes().get({id:0}).$promise.then(
                             function(response){
@@ -117,11 +128,36 @@ angular.module('confusionApp').controller('MenuController', ['$scope', 'menuFact
                                 $scope.message = "Error: "+response.status + " " + response.statusText;
                             }
                         );
-            $scope.promotion=menuFactory.getPromotion(0);
-            $scope.chef=corporateFactory.getLeader(3);
+            $scope.promotion=menuFactory.getPromotion().get({id:0}).$promise.then(
+                function (response) {
+                    $scope.promotion=response;
+                    $scope.showPromotion=true;
+                },
+                function (response) {
+                    $scope.message= "Error: "+response.status + " " + response.statusText;
+                }
+            );
+            $scope.chef=corporateFactory.getLeaders().get({id:3}).$promise.then(
+                function (response) {
+                    $scope.chef=response;
+                    $scope.showChef=true;
+                },
+                function (response) {
+                    $scope.message= "Error: "+response.status + " " + response.statusText;
+                }
+
+            );
         }])
 
         .controller('AboutController', ['$scope', 'corporateFactory', function ($scope, corporateFactory) {
-            $scope.leaders=corporateFactory.getLeaders();
+            $scope.leaders=corporateFactory.getLeaders().query(
+                function (response) {
+                    $scope.leaders=response;
+                    $scope.showLeaders=true;
+                },
+                function (response) {
+                    $scope.message= "Error: "+response.status + " " + response.statusText;
+                }
+            );
         }])
         ;

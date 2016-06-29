@@ -4,7 +4,7 @@ describe('Controller: MenuController', function () {
   beforeEach(module('confusionApp'));
   beforeEach(module(function ($urlRouterProvider) {
     $urlRouterProvider.otherwise(function(){return false;});
-}));
+    }));
 
   var MenuController, scope, $httpBackend;
 
